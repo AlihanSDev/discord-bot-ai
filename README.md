@@ -1,5 +1,5 @@
 # 🤖 AIBot Discord — AI Discord Bot for Text and Image Generation  
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=24F7E7&width=435&lines=AIBot+Discord+%E2%80%94+AI+Discord+Bot+for+Text+and+Image+Generation)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=2CF7EE&width=435&lines=AIBot+Discord)](https://git.io/typing-svg)
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)  
 ![Discord](https://img.shields.io/badge/Discord-Bot-7289DA.svg)  
