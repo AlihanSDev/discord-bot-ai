@@ -1,0 +1,143 @@
+# Discord AI Bot - Production Docker Compose
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: discord-bot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: discord_bot
+      POSTGRES_USER: bot_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMePostgresPassword123!}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bot_user -d discord_bot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.discord-bot.component: "database"
+
+  redis:
+    image: redis:7-alpine
+    container_name: discord-bot-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-ChangeMeRedisPassword123!}
+    volumes:
+      - redis_data:/data
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.discord-bot.component: "cache"
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: discord-bot-ai
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - HF_TOKEN=${HF_TOKEN}
+      - DATABASE_URL=postgresql+asyncpg://bot_user:${POSTGRES_PASSWORD:-ChangeMePostgresPassword123!}@postgres:5432/discord_bot
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-ChangeMeRedisPassword123!}@redis:6379/0
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENVIRONMENT=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - bot_logs:/app/logs
+    networks:
+      - bot-network
+    security_opt:
+      - no-new-privileges:true
+    # Health check для мониторинга
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      logging: "promtail"
+      com.discord-bot.component: "application"
+    # Ограничение ресурсов
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # Опционально: Grafana + Prometheus для мониторинга
+  # Uncomment для production мониторинга
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: discord-bot-prometheus
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prom_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #   networks:
+  #     - bot-network
+  #   ports:
+  #     - "9090:9090"
+  #   profiles:
+  #     - monitoring
+  #
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: discord-bot-grafana
+  #   restart: unless-stopped
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+  #   networks:
+  #     - bot-network
+  #   ports:
+  #     - "3000:3000"
+  #   profiles:
+  #     - monitoring
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  bot_logs:
+    driver: local
+
+networks:
+  bot-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

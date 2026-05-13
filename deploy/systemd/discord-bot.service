@@ -1,0 +1,53 @@
+[Unit]
+Description=Discord AI Bot
+After=network.target postgresql.service redis.service
+Wants=postgresql.service redis.service
+Requires=postgresql.service redis.service
+
+[Service]
+Type=simple
+User=discordbot
+Group=discordbot
+WorkingDirectory=/opt/discord-bot-ai
+EnvironmentFile=/opt/discord-bot-ai/.env.docker
+ExecStart=/usr/bin/python3 main.py
+Restart=always
+RestartSec=10
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/discord-bot-ai/logs /opt/discord-bot-ai/data
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+# Resource limits
+MemoryMax=512M
+CPUQuota=80%
+
+# Logging
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=discord-bot
+LogRateLimitIntervalSec=0
+LogRateLimitBurst=0
+
+# Health check
+TimeoutStartSec=90
+TimeoutStopSec=30
+KillMode=mixed
+KillSignal=SIGINT
+
+# Watchdog (optional)
+# WatchdogSec=60
+
+[Install]
+WantedBy=multi-user.target

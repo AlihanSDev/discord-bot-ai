@@ -1,0 +1,62 @@
+# Git files
+.git/
+.gitignore
+
+# Environment files (use .env.docker or real secrets)
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+wheels/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Database (local dev only)
+*.db
+*.sqlite
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Test/coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Docker
+docker-compose.override.yml
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
