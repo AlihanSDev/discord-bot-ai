@@ -9,6 +9,19 @@
 
 ---
 
+## 📹 Video Demo
+
+Watch the bot in action:
+
+<video width="800" controls poster="video/poster.png">
+  <source src="video/Discordbot.mp4" type="video/mp4">
+  Your browser does not support the video tag. <a href="video/Discordbot.mp4">Download the video</a>.
+</video>
+
+*Video demonstration: generating images and text responses directly in Discord*
+
+---
+
 ## ✨ Features
 
 - **🎨 Multiple Image Models** (via HuggingFace Inference API):
@@ -29,6 +42,16 @@
   - Legacy prefix commands still supported (`!SDXL_generate`, `!text`, etc.)
   - Structured logging
   - Proper error handling
+
+---
+
+## 📹 Video Demo
+
+Посмотрите демонстрацию работы бота в действии:
+
+[▶️ Смотреть видео](video/Discordbot.mp4)
+
+*Видео показывает процесс генерации изображений и текстовых ответов через Discord интерфейс*
 
 ---
 
