@@ -45,16 +45,6 @@ Watch the bot in action:
 
 ---
 
-## 📹 Video Demo
-
-Посмотрите демонстрацию работы бота в действии:
-
-[▶️ Смотреть видео](video/Discordbot.mp4)
-
-*Видео показывает процесс генерации изображений и текстовых ответов через Discord интерфейс*
-
----
-
 ## 🧠 Commands
 
 ### Slash Commands (Recommended)
