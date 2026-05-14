@@ -13,7 +13,10 @@
 
 Watch the bot in action:
 
-[▶️ Watch the demo video](video/Discordbot.mp4)
+<video width="800" controls>
+  <source src="https://raw.githubusercontent.com/AlihanSDev/discord-bot-ai/main/video/Discordbot.mp4" type="video/mp4">
+  Your browser does not support the video tag. <a href="https://github.com/AlihanSDev/discord-bot-ai/blob/main/video/Discordbot.mp4">Download the video</a>.
+</video>
 
 *Video demonstration: generating images and text responses directly in Discord*
 
